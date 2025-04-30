@@ -23,3 +23,20 @@ impl _Ememory {
         self.data[offset..offset + val.len()].copy_from_slice(val);
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_read_write_mem() {
+        let mut mem = _Ememory::_new();
+        let offset = 0;
+        let size = 23;
+        
+        let bcodes = &[0x01 as u8, 0x60];
+        mem._write(offset, bcodes);
+        let mreadf = mem._read(offset, size);
+        assert_eq!(mreadf[0], 0x01);
+    }
+}
