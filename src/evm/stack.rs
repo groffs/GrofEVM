@@ -16,8 +16,8 @@ impl _Stack {
         self.data.push(val);
     }
 
-    pub fn _pop(&mut self) {
-        self.data.pop().expect("stack underflow");
+    pub fn _pop(&mut self) -> U256 {
+        self.data.pop().expect("stack underflow")
     }
 
     pub fn _dump(&self) -> &Vec<U256>{
