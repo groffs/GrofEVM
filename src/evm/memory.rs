@@ -14,12 +14,12 @@ impl _Ememory {
         }
     }
 
-    pub fn _read(&self, offset:usize) -> &[u8]{
-        &self.data[offset..offset]
+    pub fn _read(&self, offset:usize, size: usize) -> &[u8]{
+        &self.data[offset..offset + size]
     }
 
     pub fn _write(&mut self, offset:usize, val: &[u8]) {
         self._expand(offset +  val.len());
-        self.data[offset..offset].copy_from_slice(val);
+        self.data[offset..offset + val.len()].copy_from_slice(val);
     }
 }
