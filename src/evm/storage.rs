@@ -39,4 +39,13 @@ mod test {
         sto.store(key, val);
         assert_eq!(sto.fetch(key), val);
     }
+
+    #[test]
+    fn test_storage_zero_deletes() {
+        let mut storage = Estore::new();
+        let key = U256::from(0x02);
+        storage.store(key, U256::from(0x233));
+        storage.store(key, U256::zero());
+        assert_eq!(storage.fetch(key), U256::zero());
+    }
 }

@@ -1,13 +1,8 @@
 use super::stack::Stack;
 
-
-pub enum EvmOps{
-    OpAdd = 0x60,
-}
-
-pub fn execute(opcode : EvmOps, stack: &mut Stack){
+pub fn execute(opcode : u8, stack: &mut Stack){
     match opcode {
-        EvmOps::OpAdd => {
+        0x60 => {
             let dst = stack.pop();
             let src = stack.pop();
             stack.push(dst + src);
@@ -22,7 +17,7 @@ mod test {
 
     #[test]
     fn test_execute() {
-        let eops = EvmOps::OpAdd;
+        let eops = 0x01;
         let mut stack = Stack::new();
         execute(eops, &mut stack);
     }
