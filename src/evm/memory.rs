@@ -1,42 +1,45 @@
-
-pub struct _Ememory {
-    data:Vec<u8>
+pub struct Emem {
+    mem : Vec<u8>
 }
 
-impl _Ememory {
-    pub fn _new() -> Self {
-        Self {data: vec![0; 0]}
+impl Emem {
+    pub fn new() -> Self {
+        Self { mem:vec![0;0]}
     }
 
-    pub fn _expand(&mut self, new_size: usize) {
-        if new_size > self.data.len() {
-            self.data.resize(new_size, 0);
+    pub fn realloc(&mut self, size:usize) {
+        if self.mem.len() < size {
+            self.mem.resize(size, 0);
         }
     }
 
-    pub fn _read(&self, offset:usize, size: usize) -> &[u8]{
-        &self.data[offset..offset + size]
+    pub fn read(&self, offset : usize, size: usize) -> &[u8] {
+        &self.mem[offset..offset + size]
     }
 
-    pub fn _write(&mut self, offset:usize, val: &[u8]) {
-        self._expand(offset +  val.len());
-        self.data[offset..offset + val.len()].copy_from_slice(val);
+    pub fn write(&mut self, offset : usize, ebyte: &[u8]) {
+        self.realloc(ebyte.len());
+        self.mem[offset..offset + ebyte.len()].copy_from_slice(ebyte);
     }
+
+    pub fn dump(&self) -> &[u8] {
+       &self.mem
+    } 
 }
+
 
 #[cfg(test)]
 mod test {
     use super::*;
 
     #[test]
-    fn test_read_write_mem() {
-        let mut mem = _Ememory::_new();
-        let offset = 0;
-        let size = 23;
-        
-        let bcodes = &[0x01 as u8, 0x60];
-        mem._write(offset, bcodes);
-        let mreadf = mem._read(offset, size);
-        assert_eq!(mreadf[0], 0x01);
+    fn test_mem_allocations() {
+        let mut mem = Emem::new();
+        let eoffset = 0x00;
+        let esizeet = 0x0a;
+        let ebytes : [u8; 4] = [0x01, 0x02, 0x03, 0x04]; 
+        mem.write(eoffset, &ebytes);
+        mem.read(eoffset, esizeet);
+        assert_eq!(mem.dump(), &[0x01, 0x02, 0x03, 0x04]);
     }
 }
