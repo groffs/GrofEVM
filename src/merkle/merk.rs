@@ -80,3 +80,21 @@ impl EmerkTree {
         Some(EmerkProof { hashes: proof })
     }
 }
+
+impl EmerkProof {
+    pub fn verify(&self, leaf: &[u8], root: &[u8]) -> bool {
+        let mut hashx = hash(leaf);
+        for (sibling_hash, is_left) in &self.hashes {
+            let mut combined = Vec::with_capacity(sibling_hash.len() + hashx.len());
+            if *is_left {
+                combined.extend_from_slice(sibling_hash);
+                combined.extend_from_slice(&hashx);
+            } else {
+                combined.extend_from_slice(&hashx);
+                combined.extend_from_slice(&sibling_hash);
+            }
+            hashx = hash(&combined);
+        }
+        hashx == root
+    }
+}
