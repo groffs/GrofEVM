@@ -46,3 +46,37 @@ impl EmerkTree {
         self.root.hash.clone()
     }
 }
+
+pub struct EmerkProof{
+    pub hashes: Vec<(Vec<u8>, bool)>
+}
+
+impl EmerkTree {
+    pub fn prove(&self, index:usize) -> Option<EmerkProof>{
+        if index > self.leaves.len() { return None; }
+        let mut proof = Vec::new();
+        let mut idx = index;
+        let mut nodes = self.leaves.clone();
+        while nodes.len() > 1 {
+            let mut next_lvl = Vec::new();
+            for i in (0..nodes.len()).step_by(2) {
+                let left = nodes[i].clone();
+                let right = if i + 1 < nodes.len() {
+                    nodes[i + 1].clone()
+                } else {
+                    left.clone()
+                };
+
+                if i == idx || i + 1 == idx {
+                    let is_left = idx % 2 == 1;
+                    let sib_hash = if is_left { left.hash.clone() } else { right.hash.clone()};
+                    proof.push((sib_hash, is_left));
+                    idx = next_lvl.len();
+                }
+                next_lvl.push(EmerkNode::parent(left, right));
+            }
+            nodes = next_lvl;
+        }
+        Some(EmerkProof { hashes: proof })
+    }
+}
