@@ -15,8 +15,8 @@ impl Stack {
         } self.data.push(val);
     }
 
-    pub fn pop(&mut self) -> U256 {
-        self.data.pop().expect("stack underflow")
+    pub fn pop(&mut self) -> Option<U256> {
+        self.data.pop()
     }
 
     pub fn dump(&self) -> &Vec<U256> {
